@@ -1,4 +1,8 @@
 # NtsNet pre trained on cub200 2011
+A pretrained ntsnet
+
+![][images/nts-net.png]
+
 
 ## How to use
 ```python
