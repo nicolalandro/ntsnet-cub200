@@ -1,9 +1,6 @@
 # NtsNet pre trained on cub200 2011
 A pretrained ntsnet
 
-![][images/nts-net.png]
-
-
 ## How to use
 ```python
 net = netsnet(pretrained=True, **{'topN': 6, 'device':'cpu', 'num_classes': 200})
@@ -20,4 +17,6 @@ You can read the full paper at this [link](http://artelab.dista.uninsubria.it/re
   month={Dec},
 }
 ```
+![](images/nts-net.png)
+
 
