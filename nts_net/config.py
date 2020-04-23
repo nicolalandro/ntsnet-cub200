@@ -1,0 +1,10 @@
+BATCH_SIZE = 8
+PROPOSAL_NUM = 6
+CAT_NUM = 4
+INPUT_SIZE = (448, 448)  # (w, h)
+LR = 0.001
+WD = 1e-4
+SAVE_FREQ = 1
+resume = ''
+test_model = 'models/nts_net_moreno.ckpt'
+save_dir = 'models/'
