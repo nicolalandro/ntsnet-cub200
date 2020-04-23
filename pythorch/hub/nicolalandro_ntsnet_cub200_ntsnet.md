@@ -24,7 +24,7 @@ accelerator: "cuda-optional"
 #     transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
 # ])
 import torch
-mdoel = torch.hub.load('nicolalandro/ntsnet_cub200/', 'ntsnet', pretrained=True, **{'topN': 6, 'device':'cpu', 'num_classes': 200})
+mdoel = torch.hub.load('nicolalandro/ntsnet_cub200', 'ntsnet', pretrained=True, **{'topN': 6, 'device':'cpu', 'num_classes': 200})
 top_n_coordinates, concat_out, raw_logits, concat_logits, part_logits, top_n_index, top_n_prob = model(img)
 # if you need the output props use "concat_out"
 ```
@@ -40,7 +40,7 @@ PROPOSAL_NUM = 6
 LR = 0.001
 WD = 1e-4
 
-net = torch.hub.load('nicolalandro/ntsnet_cub200/', 'ntsnet', pretrained=True, **{'topN': 6, 'device':'cpu', 'num_classes': 200})
+net = torch.hub.load('nicolalandro/ntsnet_cub200', 'ntsnet', pretrained=True, **{'topN': 6, 'device':'cpu', 'num_classes': 200})
 
 creterion = torch.nn.CrossEntropyLoss()
 
