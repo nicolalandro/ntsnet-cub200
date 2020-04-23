@@ -1,7 +1,9 @@
 # NtsNet pre trained on cub200 2011
 
 ## How to use
-
+```python
+net = netsnet(pretrained=True, **{'topN': 6, 'device':'cpu', 'num_classes': 200})
+```
 
 ## Citation
 You can read the full paper at this [link](http://artelab.dista.uninsubria.it/res/research/papers/2019/2019-IVCNZ-Nawaz-Birds.pdf).
