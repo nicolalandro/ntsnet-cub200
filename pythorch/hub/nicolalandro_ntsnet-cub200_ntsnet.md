@@ -5,7 +5,7 @@ body-class: hub
 category: researchers
 title: ntsnet
 summary: a fine grane model for image classification.
-image: images/nts-net.png
+image: nts-net.png
 author: Moreno Carraffini and Nicola Landro
 tags: [vision]
 github-link: https://github.com/nicolalandro/ntsnet_cub200
