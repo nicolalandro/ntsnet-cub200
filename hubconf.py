@@ -1,8 +1,8 @@
+dependencies = ['torch', 'numpy']
+
 import torch
 
 from nts_net.model import attention_net
-
-dependencies = ['torch', 'numpy']
 
 cub_200_2011_state_dict_url = 'https://github.com/nicolalandro/ntsnet_cub200/releases/download/0.2/nts_net_cub200.pt'
 
