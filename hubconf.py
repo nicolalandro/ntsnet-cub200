@@ -7,7 +7,7 @@ from nts_net.model import attention_net
 cub_200_2011_state_dict_url = 'https://github.com/nicolalandro/ntsnet_cub200/releases/download/0.2/nts_net_cub200.pt'
 
 
-def netsnet(pretrained=False, **kwargs):
+def ntsnet(pretrained=False, **kwargs):
     """ # This docstring shows up in hub.help()
     NtsNET model
     pretrained (bool): kwargs, load pretrained weights into the model
