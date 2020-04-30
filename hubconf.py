@@ -18,7 +18,9 @@ def ntsnet(pretrained=False, **kwargs):
     """
     net = attention_net(**kwargs)
     if pretrained:
+        from bird_classes import bird_classes
         net.load_state_dict(torch.hub.load_state_dict_from_url(cub_200_2011_state_dict_url, progress=True))
+        net.bird_classes = bird_classes
         # checkpoint = 'models/nts_net_cub200.pt'
         # state_dict = torch.load(checkpoint)
         # net.load_state_dict(state_dict)
