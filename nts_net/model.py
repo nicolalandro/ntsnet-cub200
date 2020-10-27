@@ -2,9 +2,11 @@ from torch import nn
 import torch
 import torch.nn.functional as F
 from torch.autograd import Variable
+import torchvision
+from torchvision.ops import nms
 from nts_net import resnet
 import numpy as np
-from nts_net.anchors import generate_default_anchor_maps, hard_nms
+from nts_net.anchors import generate_default_anchor_maps
 from nts_net.config import CAT_NUM, PROPOSAL_NUM, test_model
 
 
@@ -51,20 +53,35 @@ class attention_net(nn.Module):
         batch = x.size(0)
         # we will reshape rpn to shape: batch * nb_anchor
         rpn_score = self.proposal_net(rpn_feature.detach())
-        all_cdds = [
-            np.concatenate((x.reshape(-1, 1), self.edge_anchors.copy(), np.arange(0, len(x)).reshape(-1, 1)), axis=1)
-            for x in rpn_score.data.cpu().numpy()]
-        top_n_cdds = [hard_nms(x, topn=self.topN, iou_thresh=0.25) for x in all_cdds]
-        top_n_cdds = np.array(top_n_cdds)
-        top_n_index = top_n_cdds[:, :, -1].astype(np.int)
-        top_n_index = torch.from_numpy(top_n_index).to(self.device)
-        top_n_prob = torch.gather(rpn_score, dim=1, index=top_n_index)
-        part_imgs = torch.zeros([batch, self.topN, 3, 224, 224]).to(self.device)
+        top_n_index_list = []
+        top_n_prob_list = []
         top_n_coordinates = []
+        edge_anchors_copy = torch.Tensor(self.edge_anchors)
+        zero_tensor = torch.zeros(rpn_score.size()[1], 1)
+
+        for i in range(batch):
+            rpn_score_reshape = rpn_score[i]
+            nms_output_idx = nms(edge_anchors_copy, rpn_score_reshape, iou_threshold=0.25)
+            nms_output_score = torch.gather(rpn_score_reshape, 0, nms_output_idx)
+            nms_output_anchors = torch.index_select(edge_anchors_copy, 0, nms_output_idx)
+            top_n_result = torch.topk(nms_output_score, self.topN)
+            top_n_anchors = torch.index_select(nms_output_anchors, 0, top_n_result[1])
+            y0_1, x0_1, y1_1, x1_1 = torch.split(top_n_anchors, 1, dim=1)
+            top_n_anchors_1 = torch.cat([x0_1, y0_1, x1_1, y1_1], dim=1)
+            top_n_index_origin = torch.index_select(nms_output_idx, 0, top_n_result[1])
+            top_n_index_list.append(top_n_index_origin)
+            top_n_prob_list.append(top_n_result[0])
+            top_n_coordinates.append(top_n_anchors_1)
+
+        top_n_index = torch.stack(top_n_index_list)
+        top_n_prob = torch.stack(top_n_prob_list)
+        part_imgs = torch.zeros([batch, self.topN, 3, 224, 224])
         for i in range(batch):
             for j in range(self.topN):
-                [y0, x0, y1, x1] = top_n_cdds[i][j, 1:5].astype(np.int)
-                top_n_coordinates.append([x0, y0, x1, y1])
+                y0 = top_n_coordinates[i][j][1].long()
+                x0 = top_n_coordinates[i][j][0].long()
+                y1 = top_n_coordinates[i][j][3].long()
+                x1 = top_n_coordinates[i][j][2].long()
                 part_imgs[i:i + 1, j] = F.interpolate(x_pad[i:i + 1, :, y0:y1, x0:x1], size=(224, 224), mode='bilinear',
                                                       align_corners=True)
         part_imgs = part_imgs.view(batch * self.topN, 3, 224, 224)
