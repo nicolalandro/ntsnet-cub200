@@ -106,6 +106,7 @@ class ResNet(nn.Module):
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
         self.avgpool = nn.AvgPool2d(7)
         self.fc = nn.Linear(512 * block.expansion, num_classes)
+        self.dropout = nn.Dropout(0.5)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -145,7 +146,7 @@ class ResNet(nn.Module):
         feature1 = x
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
-        x = nn.Dropout(p=0.5)(x)
+        x = self.dropout(x)
         feature2 = x
         x = self.fc(x)
 
