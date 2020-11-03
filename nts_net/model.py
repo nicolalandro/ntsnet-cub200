@@ -56,7 +56,7 @@ class attention_net(nn.Module):
         top_n_index_list = []
         top_n_prob_list = []
         top_n_coordinates = []
-        edge_anchors_copy = torch.Tensor(self.edge_anchors)
+        edge_anchors_copy = torch.tensor(self.edge_anchors, dtype=torch.float32).to(self.device)
         zero_tensor = torch.zeros(rpn_score.size()[1], 1)
 
         for i in range(batch):
@@ -84,7 +84,7 @@ class attention_net(nn.Module):
                 x1 = top_n_coordinates[i][j][2].long()
                 part_imgs[i:i + 1, j] = F.interpolate(x_pad[i:i + 1, :, y0:y1, x0:x1], size=(224, 224), mode='bilinear',
                                                       align_corners=True)
-        part_imgs = part_imgs.view(batch * self.topN, 3, 224, 224)
+        part_imgs = part_imgs.view(batch * self.topN, 3, 224, 224).to(self.device)
         _, _, part_features = self.pretrained_model(part_imgs.detach())
         part_feature = part_features.view(batch, self.topN, -1)
         part_feature = part_feature[:, :CAT_NUM, ...].contiguous()
