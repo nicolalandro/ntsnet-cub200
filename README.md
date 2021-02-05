@@ -1,3 +1,7 @@
+[![Open on Torch Hub](https://img.shields.io/badge/Torch-Hub-red?logo=pytorch&style=for-the-badge)](https://pytorch.org/hub/nicolalandro_ntsnet-cub200_ntsnet/)
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pytorch/pytorch.github.io/blob/master/assets/hub/nicolalandro_ntsnet-cub200_ntsnet.ipynb)
+
 # NtsNet pre trained on cub200 2011
 A pretrained ntsnet
 
